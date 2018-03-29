@@ -1,0 +1,41 @@
+﻿@model TrashCollector.Models.Invoice
+@{
+    ViewBag.Title = "Pay Invoice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 style="margin-top: 40px;">Pay Invoice #@String.Format("{0:C2}", Model.InvoiceId.ToString())</h2>
+<div class="row">
+    <div class="col-md-12">
+        <h4><strong>Amount Due: </strong>@String.Format("{0:C2}", Model.AmountDue)</h4>
+        <h4><strong>Due Date: </strong>@String.Format("{0:M/d/yyyy}", Model.DueDate)</h4>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <form name="_xclick" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+            <input type="hidden" name="cmd" value="_xclick">
+            <input type="hidden" name="business" value="seller_1361208199_biz@att.net">
+            <input type="hidden" name="currency_code" value="USD">
+            <input type="hidden" name="item_name" value="Payment for RK Trash Collection Invoice #@Model.InvoiceId">
+            <input type="hidden" name="amount" value="@Model.AmountDue">
+            @{ 
+                string absUrl = Url.Action("MarkPaid", "Invoice", new { invoiceId = Model.InvoiceId}, Request.Url.Scheme);
+            }
+            <input type="hidden" name="return" value="@absUrl">
+            <input type="submit"  class="btn btn-primary" name="submit" value="Pay via PayPal" />
+        </form>
+
+        <FORM action="https://www.paypal.com/cgi-bin/webscr" method="post">
+
+
+
+
+
+</div>
+</div>
+
+@section Scripts{
+
+}

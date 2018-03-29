@@ -1,0 +1,110 @@
+﻿@using TrashCollector.Models;
+@using Microsoft.AspNet.Identity;
+@model IEnumerable<TrashCollector.Models.Address>
+@{
+    ViewBag.Title = "My Pickups";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_DashboardNav")
+
+@{ 
+    bool todayOnly = Convert.ToBoolean(Request.QueryString["todayOnly"]);
+}
+
+@*@if (todayOnly)
+{
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-6 col-md-offset-3">
+            @Html.ActionLink("Mark All Pickups As Complete", "MarkAllComplete", "Pickup", routeValues: new { userId = User.Identity.GetUserId() }, htmlAttributes: new { title = "Mark as Complete", @class = "btn btn-success btn-lg btn-block" })
+        </div>
+    </div>
+}*@
+
+<div class="row">
+    <div id="map" style="width: 100%; height: 400px; margin-bottom: 20px; margin-top: 20px;"></div>
+</div>
+
+<div class="row">
+@{int count = 1; }
+@foreach (var address in Model)
+{
+    <span class="marker" data-count="@count.ToString()" data-lat="@address.lat" data-lng="@address.lng"></span>
+    <div class="col-md-3">
+        <div class="well">
+            <h3 class="float-left" style="margin-top: 0;"><span class="label label-danger">@count</span></h3>
+            <p>
+                <span class="text-success"><strong>Pickup Day:</strong> @address.TrashCollection.PickUpDay</span><br />
+                @address.StreetOne<br />
+                @address.City.Name, @address.State.Abbreviation @address.ZipCode.Number
+            </p>
+            @if (todayOnly)
+            {
+                bool foundPickup = false;
+                Pickup pickup = new Pickup();
+                if (address.TrashCollection.Pickups != null)
+                {
+                    pickup = address.TrashCollection.Pickups.Where(p => p.DateCompleted.Date == DateTime.Now.Date).FirstOrDefault();
+                    if (pickup != null)
+                    {
+                        foundPickup = true;
+                    }
+                }
+                if (foundPickup)
+                {
+                    <p>
+                        @Html.ActionLink("Mark As Incomplete", "Delete", "Pickup", routeValues: new { pickupId = pickup.PickupId}, htmlAttributes: new { title = "Mark as Complete", @class = "btn btn-danger btn-block" })
+                    </p>
+                }
+                else
+                {
+                    <p>
+                        @Html.ActionLink("Mark As Complete", "Add", "Pickup", routeValues: new { trashCollectionId = address.TrashCollection.TrashCollectionId }, htmlAttributes: new { title = "Mark as Complete", @class = "btn btn-success btn-block" })
+                    </p>
+                }
+            }
+        </div>
+    </div>
+        if (count % 4 == 0)
+        {
+            @:</div><div class="row">
+        }
+        count++;
+}
+</div>
+
+@section Scripts{
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            let map;
+            function initMap(latitude, longtitude) {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 13,
+                    center: { lat: latitude, lng: longtitude }
+                });
+            }
+
+            function addMarker(latitude, longtitude, label) {
+                marker = new google.maps.Marker({
+                    position: { lat: latitude, lng: longtitude },
+                    map: map,
+                    label: "" + label
+                });
+            }
+
+            let initialMapData = $(".marker").data();
+            initMap(initialMapData.lat, initialMapData.lng);
+
+            $(".marker").each(function () {
+                let mapData = $(this).data();
+                addMarker(mapData.lat, mapData.lng, mapData.count);
+            });
+
+        });
+
+    </script>
+
+}

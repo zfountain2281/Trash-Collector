@@ -1,0 +1,93 @@
+﻿@using Microsoft.AspNet.Identity
+@using TrashCollector.Models
+@model TrashCollector.Models.Profile
+
+@{
+    ViewBag.Title = "My Addresses";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_DashboardNav")
+
+
+@if (Model.Addresses.Count > 0)
+{
+    <h3>My Addresses</h3>
+    <p>
+        @Html.ActionLink("Add Address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class = "btn btn-primary" })
+    </p>
+    var count = 1;
+    <div class="row">
+        @foreach (var address in Model.Addresses)
+        {
+            <div class="col-md-3">
+                <div class="well">
+                    @{
+                        string idName = "map" + count;
+                    }
+                    <div id="@idName" style="width: 100%; height: 200px; margin-bottom: 20px;"></div>                                       
+                    @if (address.TrashCollection.StartDate != null)
+                    {
+                        <p>
+                            @Html.ActionLink("Modify Trash Collection", "ScheduleCollection", "Address", routeValues: new { addressId = address.AddressId }, htmlAttributes: new { title = "Modify Trash Collection", @class = "btn btn-info btn-s btn-block" })
+                        </p>
+                    }
+                    else
+                    {
+                        <p>
+                            @Html.ActionLink("Activate Trash Collection", "ScheduleCollection", "Address", routeValues: new { addressId = address.AddressId }, htmlAttributes: new { title = "Schedule Trash Collection", @class = "btn btn-danger btn-s btn-block" })
+                        </p>
+                    }
+                    <p>
+                        @address.StreetOne<br />
+                        @address.City.Name, @address.State.Abbreviation @address.ZipCode.Number
+                    </p>
+                    <p>
+                        @Html.ActionLink("Edit Address", "Edit", "Address", routeValues: new { id = address.AddressId }, htmlAttributes: new { title = "Add Address", @class = "btn btn-default btn-xs" })
+                        @Html.ActionLink("Delete Address", "Delete", "Address", routeValues: new { id = address.AddressId }, htmlAttributes: new { title = "Add Address", @class = "btn btn-danger btn-xs" })
+                    </p>
+                </div>
+            </div>
+            if (count % 4 == 0)
+            {
+                @:</div><div class="row">
+        }
+            count++;
+        }
+    </div>
+}
+else
+{
+    <h3>No Addresses Found</h3>
+    <p>
+        @Html.ActionLink("Add Address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class = "btn btn-primary" })
+    </p>
+    <div class="alert alert-danger" role="alert">You have not added any addresses to your account. Please @Html.ActionLink("add an address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class="alert-link" }) to schedule your trash collection.</div>
+}
+@section Scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            @{
+               int count = 1;
+            }
+            @foreach (var address in Model.Addresses)
+            {
+                string idName = "map" + count;
+                string markerName = "marker" + count;
+                <text>
+                var @idName = new google.maps.Map(document.getElementById("@idName"), {
+                    zoom: 15,
+                    center: { lat: @address.lat, lng: @address.lng },
+                    disableDefaultUI: true
+                });
+                var @markerName = new google.maps.Marker({
+                    position: { lat: @address.lat, lng: @address.lng },
+                    map: @idName
+                });
+                </text>
+                count++;
+            }
+        });
+    </script>
+}

@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNet.Identity
+@using TrashCollector.Extensions
+
+<h2>Welcome back, @User.Identity.GetUserName()</h2>
+<div class="row">
+    <div class="col-md-12">
+        @if (User.IsInRole("Admin"))
+        {
+            <ul class="nav nav-tabs">
+                <li role="presentation">@Html.ActionLink("Users", "Index", "User")</li>
+                <li role="presentation">@Html.ActionLink("Invoices", "Index", "Invoice")</li>
+            </ul>
+        }
+        else if (User.IsInRole("Customer"))
+        {
+            <ul class="nav nav-tabs">
+                <li role="presentation">@Html.ActionLink("Account", "Details", "Profile")</li>
+                <li role="presentation">@Html.ActionLink("My Addresses", "Addresses", "Profile")</li>
+                @*<li role="presentation">@Html.ActionLink("Transaction History", "Transactions", "Profile")</li>*@
+            </ul>
+        }
+        else if (User.IsInRole("Employee"))
+        {
+            <ul class="nav nav-tabs">
+                <li role="presentation">@Html.ActionLink("Today's Pickups", "Pickups", "Profile", routeValues: new { todayOnly = true }, htmlAttributes: null)</li>
+                <li role="presentation">@Html.ActionLink("All Pickups", "Pickups", "Profile")</li>
+            </ul>
+        }
+    </div>
+</div>
+

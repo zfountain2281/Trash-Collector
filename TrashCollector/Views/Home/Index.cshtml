@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Zack Fountain's Trash Collection</h1>
+    <p class="lead">Welcome to Zack Fountains Trash Collection. <em></p>
+    <p>
+        @Html.ActionLink(
+            "Sign Up",                                                  // linkText
+            "Register",                                    // actionName
+            "Account",                                                   // controllerName
+            null,                                                     // routeValues
+            new                                                     // htmlAttributes
+            {
+                @class = "btn btn-primary btn-lg"
+            }
+        )
+
+        @Html.ActionLink(
+            "Log In",                                                  // linkText
+            "LogIn",                                    // actionName
+            "Account",                                                  // controllerName
+            null,                                                     // routeValues
+            new                                                     // htmlAttributes
+            {
+                @class = "btn btn-success btn-lg"
+            }
+        )
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Nationwide Service</h2>
+        <p>If you have a zip code, we can pick up your trash! Our trucks roll everywhere except Hawaii and Alaska!</p>
+        <p><a class="btn btn-default" href="#">Learn More</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Pick Your Pickup Day</h2>
+        <p>Arbitrary collection days are for suckers. YOU choose which day we grab your junk!</p>
+        <p><a class="btn btn-default" href="#">Learn More</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Pay Online</h2>
+        <p>Imagine yourself in 1991. Could you pay online then? Nope. You can now!</p>
+        <p><a class="btn btn-default" href="https://www.paypal.com/us/home">Learn More</a></p>
+    </div>
+</div>

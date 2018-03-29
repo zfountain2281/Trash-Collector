@@ -1,0 +1,148 @@
+﻿@using Microsoft.AspNet.Identity
+@using TrashCollector.Models
+@model TrashCollector.Models.Address
+
+@{
+    ViewBag.Title = "Schedule Trash Collection";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div id="map" style="width: 100%; height: 400px; margin-bottom: 20px;"></div>
+</div>
+<div class="row">
+    @using (Html.BeginForm())
+    {
+        <input type="hidden" name="addressId" value=@Model.AddressId>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-md-2">Address</label>
+                <div class="col-md-10">
+                    @Model.StreetOne<br />
+                    @Model.City.Name, @Model.State.Abbreviation @Model.ZipCode.Number
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">Day Of The Week</label>
+                <div class="col-md-10">
+                    <select class="form-control" name="PickUpDay" id="PickUpDay">
+                        <option>@DayOfWeek.Monday</option>
+                        <option>@DayOfWeek.Tuesday</option>
+                        <option>@DayOfWeek.Wednesday</option>
+                        <option>@DayOfWeek.Thursday</option>
+                        <option>@DayOfWeek.Friday</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Start Date</label>
+                <div class="col-md-10">
+                    <div class="input-group date">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        <input type="text" class="form-control" name="StartDate" id="StartDate" placeholder="MM/DD/YYYY" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Vacation Start Date</label>
+                <div class="col-md-10">
+                    <div class="input-group date">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        <input type="text" class="form-control" name="VacationStartDate" id="VacationStartDate" placeholder="MM/DD/YYYY" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Vacation End Date</label>
+                <div class="col-md-10">
+                    <div class="input-group date">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        <input type="text" class="form-control"  name="VacationEndDate" id="VacationEndDate" placeholder="MM/DD/YYYY" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-primary" id="submit" />
+                </div>
+            </div>
+        </div>
+}
+</div>
+
+@section Scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            //Prepopulate pick up day
+            let pickUpDay = "";
+            @{
+                if (Model.TrashCollection != null)
+                {
+                    @:pickUpDay = "@Model.TrashCollection.PickUpDay";
+                                                                }
+            }
+            $('#PickUpDay > option').each(function () {
+                if ($(this).text() === pickUpDay) {
+                    $(this).attr("selected", "selected");
+                }
+            });
+
+            //prepopulate start up date
+            @if ( Model.TrashCollection.StartDate !=null )
+            {
+                @:$("#StartDate").val("@Model.TrashCollection.StartDate");
+                                    }
+
+            //prepopulate vacation start date
+            @if ( Model.TrashCollection.VacationStartDate !=null )
+            {
+                @:$("#VacationStartDate").val("@Model.TrashCollection.VacationStartDate");
+                                    }
+
+            //prepopulate vacation end date
+            @if ( Model.TrashCollection.VacationEndDate !=null )
+            {
+                @:$("#VacationEndDate").val("@Model.TrashCollection.VacationEndDate");
+            }
+
+            //Setup all datetimepickers
+            $(function () {
+                $('.date').datetimepicker({
+                    format: 'MM/DD/YYYY'
+                });
+            });
+
+            //Google maps api test
+            //Key: AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w
+            function initMap() {
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 15,
+                    center: { lat: @Model.lat, lng: @Model.lng }
+                });
+                var marker = new google.maps.Marker({
+                    position: { lat: @Model.lat, lng: @Model.lng },
+                    map: map
+                });
+            }
+            initMap();
+
+            //geocoding test            
+            $.getJSON('https://maps.googleapis.com/maps/api/geocode/json?address=2573+N+65th+St+Wauwatosa+WI&key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w', function (data) {
+                console.log(data.results[0].geometry.location);
+            });
+        });
+    </script>
+
+}
