@@ -9,7 +9,12 @@
 
 @Html.Partial("_DashboardNav")
 
-<h1>Balance Due: @String.Format("{0:C2}",Model.AmountDue)</h1>
+<h1>Balance Due: @String.Format("5.00", Model.AmountDue)</h1>
+<div class="col-md-4">
+    <h2>Pay Online</h2>
+    <p>Pay your current amount due here!</p>
+    <p><a class="btn btn-default" href="https://www.paypal.com/us/home">Learn More</a></p>
+</div>
 
 @if (Model.Invoices.Count > 0)
 {
