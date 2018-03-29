@@ -61,10 +61,10 @@ namespace TrashCollector
                 //Declare user for re-use
                 ApplicationUser user;
 
-                //Add TrashGrrl53202
+                //Add zfountain2281
                 user = new ApplicationUser();
                 user.UserName = "zfountain2281";
-                user.Email = "ztrain71@att.net";
+                user.Email = "ztrain88@att.net";
                 user.Profile = new Profile();
                 user.Profile.ZipCodes = "53090";
                 string userPWD = "Hockey.271";
